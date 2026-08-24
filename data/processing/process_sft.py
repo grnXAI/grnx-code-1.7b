@@ -6,7 +6,7 @@ import torch
 import yaml
 import os
 
-with open("sft.yaml", "r") as f:
+with open("configs/sft.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 data = {}
