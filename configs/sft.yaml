@@ -1,18 +1,19 @@
 model:
   name: Qwen/Qwen2.5-1.5B
-  tokenizer: Qwen/Qwen2.5-1.5B
+  tokenizer: tokenizer/qwen
   dtype: bfloat16
   gradient_checkpointing: true
 
 data:
-  processed_dir: ./processed/SFT
-  shard_pattern: "*.pt"
+  raw_dir: data/raw/sft/opencode-reasoning-50k
+  processed_dir: data/processed/sft/opencode-reasoning-50k
   sequence_length: 2048
+  shard_pattern: "shard_*.pt"
   shuffle: true
   num_workers: 4
 
 training:
-  output_dir: ./checkpoints/SFT
+  output_dir: checkpoints/sft/opencode-reasoning-50k
   epochs: 1
   per_device_train_batch_size: 2
   gradient_accumulation_steps: 8
