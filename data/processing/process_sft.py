@@ -1,9 +1,13 @@
 from transformers import AutoTokenizer
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset as TorchDataset
 from datasets import Dataset
 import pandas as pd
 import torch
+import yaml
 import os
+
+with open("sft.yaml", "r") as f:
+    config = yaml.safe_load(f)
 
 data = {}
 path = "data/raw/sft/opencode-reasoning-50k"
@@ -20,10 +24,15 @@ for shard in data:
     data[shard] = data[shard][["tokenized_data"]]
 
 for shard in data:
-    data[shard] = data[shard].flatten().long()
+    tokens = []
 
-class TokenDataset(Dataset):
-    def __init__(self, tokens, seq_len=2048):
+    for sequence in data[shard]["tokenized_data"]:
+        tokens.extend(sequence)
+
+    data[shard] = torch.tensor(tokens, dtype=torch.long)
+
+class TokenDataset(TorchDataset):
+    def __init__(self, tokens, seq_len):
         self.tokens = tokens
         self.seq_len = seq_len
 
@@ -42,7 +51,18 @@ class TokenDataset(Dataset):
             "labels": labels
         }
 
-train_dataset = TokenDataset(
-    data["shard_1"],
-    seq_len=2048
-)
+seq_len = config["data"]["sequence_length"]
+save_path = config["data"]["processed_dir"]
+
+os.makedirs(save_path, exist_ok=True)
+
+for shard in data:
+    data[shard] = TokenDataset(
+        data[shard],
+        seq_len=seq_len
+    )
+
+    torch.save(
+        data[shard],
+        os.path.join(save_path, f"{shard}.pt")
+    )
