@@ -1,5 +1,10 @@
-from datasets import load_dataset, Dataset
-from tqdm import tqdm
+from datasets import load_dataset
+import os
+
+os.makedirs(
+    "data/raw/grpo/codecontests-plus-1x",
+    exist_ok=True
+)
 
 dataset = load_dataset(
     "ByteDance-Seed/Code-Contests-Plus",
@@ -8,18 +13,18 @@ dataset = load_dataset(
     streaming=True
 )
 
-dataset = dataset.remove_columns([
-    "correct_submissions",
-    "incorrect_submissions",
-    "generator",
-    "generator_cmd"
+dataset = dataset.select_columns([
+    "source",
+    "id",
+    "title",
+    "description",
+    "time_limit",
+    "memory_limit",
+    "validator",
+    "checker",
+    "test_cases"
 ])
 
-rows = []
-
-for row in tqdm(dataset, total=11690):
-    rows.append(row)
-
-Dataset.from_list(rows).save_to_disk(
-    "data/raw/grpo/codecontests-plus-1x"
+dataset.to_parquet(
+    "data/raw/grpo/codecontests-plus-1x/data.parquet"
 )
