@@ -1,10 +1,9 @@
 from datasets import load_dataset
+from tqdm import tqdm
 import os
 
-os.makedirs(
-    "data/raw/grpo/codecontests-plus-1x",
-    exist_ok=True
-)
+path = "data/raw/grpo/codecontests-plus-1x"
+os.makedirs(path, exist_ok=True)
 
 dataset = load_dataset(
     "ByteDance-Seed/Code-Contests-Plus",
@@ -25,6 +24,8 @@ dataset = dataset.select_columns([
     "test_cases"
 ])
 
-dataset.to_parquet(
-    "data/raw/grpo/codecontests-plus-1x/data.parquet"
-)
+for i in tqdm(range(dataset.num_shards)):
+    shard = dataset.shard(dataset.num_shards, i)
+    shard.to_parquet(
+        f"{path}/shard-{i:05d}.parquet"
+    )
