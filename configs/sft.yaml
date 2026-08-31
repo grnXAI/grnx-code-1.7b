@@ -1,0 +1,63 @@
+model:
+  name: Qwen/Qwen3-1.7B
+  tokenizer: Qwen/Qwen3-1.7B
+  dtype: bfloat16
+  gradient_checkpointing: true
+  attn_implementation: flash_attention_2
+
+data:
+  sequence_length: 4096
+  raw_dir: data/raw/sft
+  processed_dir: data/processed/sft
+
+  stage_1:
+    name: general-web
+    opencode_instruct_samples: 160000
+    maple_samples: 16000
+    vulcan_samples: 5000
+    nextjs_samples: 1427
+    min_opencode_test_score: 0.8
+
+  stage_2:
+    name: code-reasoning
+    opencode_reasoning_samples: 40000
+    min_pass_rate: 1.0
+
+  write_batch_size: 2000
+  shuffle: true
+  seed: 42
+  num_workers: 4
+
+training:
+  stage_1:
+    output_dir: checkpoints/sft/general-web
+    learning_rate: 2.0e-6
+
+  stage_2:
+    output_dir: checkpoints/sft/code-reasoning
+    learning_rate: 1.0e-6
+
+  epochs: 1
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 4
+
+  weight_decay: 0.1
+  warmup_ratio: 0.03
+  lr_scheduler_type: cosine
+
+  bf16: true
+  tf32: true
+
+  optim: adamw_torch_fused
+
+  logging_steps: 10
+  save_steps: 500
+  save_total_limit: 2
+
+  max_grad_norm: 1.0
+
+  dataloader_num_workers: 4
+  dataloader_pin_memory: true
+  dataloader_persistent_workers: true
+
+  seed: 42

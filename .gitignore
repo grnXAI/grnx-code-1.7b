@@ -1,0 +1,28 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+wandb/
+*.safetensors
+*.pt
+*.pth
+
+# Large downloaded/processed datasets
+data/raw/*
+!data/raw/sft/
+!data/raw/grpo/
+data/raw/sft/*
+!data/raw/sft/.gitkeep
+data/raw/grpo/*
+!data/raw/grpo/.gitkeep
+data/processed/sft/*
+!data/processed/sft/.gitkeep
+data/processed/grpo/*
+!data/processed/grpo/.gitkeep
+
+# Checkpoints
+checkpoints/*
+!checkpoints/.gitkeep
+
+#Tokenizer
+tokenizer/qwen
