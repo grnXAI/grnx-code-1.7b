@@ -1,6 +1,6 @@
 model:
-  name: Qwen/Qwen2.5-1.5B
-  tokenizer: tokenizer/qwen
+  name: Qwen/Qwen3-1.7B-Base
+  tokenizer: Qwen/Qwen3-1.7B-Base
   dtype: bfloat16
   gradient_checkpointing: true
 
