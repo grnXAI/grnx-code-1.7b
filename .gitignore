@@ -26,3 +26,8 @@ checkpoints/*
 
 #Tokenizer
 tokenizer/qwen
+data/raw/
+data/processed/
+checkpoints/
+__pycache__/
+.DS_Store
